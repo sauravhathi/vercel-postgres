@@ -7,13 +7,14 @@ export default async function handler(
 ) {
   const client = await db.connect();
  
-  try {
-    await client.sql`CREATE TABLE Pets ( Name varchar(255), Owner varchar(255) );`;
-    const names = ['Fiona', 'Lucy'];
-    await client.sql`INSERT INTO Pets (Name, Owner) VALUES (${names[0]}, ${names[1]});`;
-  } catch (error) {
-    return response.status(500).json({ error });
-  }
+ // uncomment this block to create a table and insert some data
+ // try {
+ //   await client.sql`CREATE TABLE Pets ( Name varchar(255), Owner varchar(255) );`;
+ //   const names = ['Fiona', 'Lucy'];
+ //   await client.sql`INSERT INTO Pets (Name, Owner) VALUES (${names[0]}, ${names[1]});`;
+ // } catch (error) {
+ //   return response.status(500).json({ error });
+ // }
  
   const pets = await client.sql`SELECT * FROM Pets;`;
   return response.status(200).json({ pets });
