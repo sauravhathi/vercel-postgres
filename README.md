@@ -31,6 +31,8 @@ Navigate to the Project you'd like to add a Postgres database to. Adding the dat
 
 Select the **Storage** tab, then select the **Connect Database** button. Under the **Create New** tab, select **Postgres** and then the **Continue** button.
 
+![image](https://user-images.githubusercontent.com/61316762/235774724-0b8dbc8e-5d29-474f-ba79-3d9f3626328c.png)
+
 To create a new database, do the following in the dialog that opens:
 
 1. Enter **pets_postgres_db** (or any other name you wish) under **Store Name**. The name can only contain alphanumeric letters, "_" and "-" and can't exceed 32 characters.
