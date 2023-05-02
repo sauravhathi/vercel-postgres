@@ -1,38 +1,94 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vercel Postgres
 
-## Getting Started
+Getting Started with Vercel Postgres and Next.js
 
-First, run the development server:
+## Prerequisites
 
+Install the Vercel Postgres package
+    
 ```bash
-npm run dev
+npm install @vercel/postgres
+
 # or
-yarn dev
-# or
-pnpm dev
+
+yarn add @vercel/postgres
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quickstart
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Create a Postgres database
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Navigate to the Project you'd like to add a Postgres database to. Adding the database at the project-level means that Vercel will automatically create the environment variables for you.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Select the **Storage** tab, then select the **Connect Database** button. Under the **Create New** tab, select **Postgres** and then the **Continue** button.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+To create a new database, do the following in the dialog that opens:
 
-## Learn More
+1. Enter **pets_postgres_db** (or any other name you wish) under **Store Name**. The name can only contain alphanumeric letters, "_" and "-" and can't exceed 32 characters.
+2. Select a region. We recommend choosing a region geographically close to your Edge and Serverless Function regions for reduced latency
+3. Click **Create**
 
-To learn more about Next.js, take a look at the following resources:
+### Review what was created
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Your empty database is created in the region specified.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Because you created the Postgres database in a project, we automatically created and added the following environment variables to the project for you. Later in this quickstart, we'll pull them locally so we can use them with the project.
 
-## Deploy on Vercel
+- POSTGRES_URL
+- POSTGRES_PRISMA_URL
+- POSTGRES_URL_NON_POOLING
+- POSTGRES_USER
+- POSTGRES_HOST
+- POSTGRES_PASSWORD
+- POSTGRES_DATABASE
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Preparing your local project
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+When you created your Postgres database, your API URL and credentials were created as environment variables automatically. You'll need to pull down the latest environment variables to get your local project working with the Postgres database.
+
+```bash
+vercel env pull .env.development.local
+```
+
+### Alternatively, you can manually add the environment variables
+
+
+
+### Populate your database
+
+We're going to add a function to your project through an API route. Add the following file and code:
+
+`pages/api/pets.ts`
+```bash
+import { db } from '@vercel/postgres';
+import { NextApiRequest, NextApiResponse } from 'next';
+ 
+export default async function handler(
+  request: NextApiRequest,
+  response: NextApiResponse,
+) {
+  const client = await db.connect();
+ 
+  try {
+    await client.sql`CREATE TABLE Pets ( Name varchar(255), Owner varchar(255) );`;
+    const names = ['Fiona', 'Lucy'];
+    await client.sql`INSERT INTO Pets (Name, Owner) VALUES (${names[0]}, ${names[1]});`;
+  } catch (error) {
+    return response.status(500).json({ error });
+  }
+ 
+  const pets = await client.sql`SELECT * FROM Pets;`;
+  return response.status(200).json({ pets });
+}
+```
+
+While it might look we are just hardcoding variables into the query, sql is a function that translates your query into a native Postgres parametrized query to help prevent SQL injection.
+
+### Run your application locally
+
+Run your application locally and visit `/api/pets` to see your data output. The function intercepts requests to `/api/pets` and responds with the data from your Postgres database.
+
+```bash
+http://localhost:3000/api/pets
+```
