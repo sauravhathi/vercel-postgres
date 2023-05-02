@@ -2,6 +2,10 @@
 
 Getting Started with Vercel Postgres and Next.js
 
+## Demo
+
+### https://vercel-postgres-five.vercel.app/api/pets
+
 ## Prerequisites
 
 Install the Vercel Postgres package
