@@ -15,6 +15,14 @@ yarn add @vercel/postgres
 
 ```
 
+Install the Vercel CLI
+
+```bash
+npm install -g vercel
+
+vercel login
+```
+
 ## Quickstart
 
 ### Create a Postgres database
@@ -53,7 +61,7 @@ vercel env pull .env.development.local
 
 ### Alternatively, you can manually add the environment variables
 
-
+![image](https://user-images.githubusercontent.com/61316762/235773472-4d75d5a7-9fbf-456e-b619-44d8074d93e9.png)
 
 ### Populate your database
 
@@ -92,3 +100,8 @@ Run your application locally and visit `/api/pets` to see your data output. The 
 ```bash
 http://localhost:3000/api/pets
 ```
+
+### Data
+Browse the tables in this database and run SQL queries against the data.
+
+![image](https://user-images.githubusercontent.com/61316762/235773601-6413e675-dabd-4bf3-84bd-11aa1deb7b50.png)
